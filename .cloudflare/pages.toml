@@ -6,4 +6,5 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_VERSION = "9" 
+  NPM_VERSION = "9"
+  NODE_OPTIONS = "--max-old-space-size=4096" 
