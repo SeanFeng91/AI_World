@@ -20,5 +20,14 @@ export default defineConfig({
     cssCodeSplit: true,
     sourcemap: false,
     minify: 'esbuild',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: {
+          vendor: ['vue'],
+        },
+      },
+    },
   }
 }); 

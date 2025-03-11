@@ -8,7 +8,7 @@
     "build:css": "tailwindcss -i ./src/assets/main.css -o ./dist/output.css",
     "watch:css": "tailwindcss -i ./src/assets/main.css -o ./dist/output.css --watch",
     "dev": "vite",
-    "build": "vite build",
+    "build": "npx vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
