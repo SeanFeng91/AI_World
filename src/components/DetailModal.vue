@@ -169,6 +169,64 @@
               </div>
             </div>
 
+            <!-- 书籍推荐部分 -->
+            <div v-if="event.recommendations?.books && event.recommendations.books.length > 0" class="bg-white">
+              <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
+                <span class="w-1 h-5 bg-japan-red rounded-full mr-2"></span>
+                推荐书籍
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div 
+                  v-for="(book, index) in event.recommendations.books"
+                  :key="index"
+                  class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300"
+                >
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-gray-800">{{ book.title }}</h4>
+                    <a 
+                      v-if="book.link"
+                      :href="book.link"
+                      target="_blank"
+                      class="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      <i class="fas fa-external-link-alt"></i>
+                    </a>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">作者：{{ book.author }}</p>
+                  <p class="text-sm text-gray-700 mt-2 line-clamp-2">{{ book.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 电影推荐部分 -->
+            <div v-if="event.recommendations?.movies && event.recommendations.movies.length > 0" class="bg-white">
+              <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
+                <span class="w-1 h-5 bg-japan-red rounded-full mr-2"></span>
+                推荐影视
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div 
+                  v-for="(movie, index) in event.recommendations.movies"
+                  :key="index"
+                  class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300"
+                >
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-gray-800">{{ movie.title }}</h4>
+                    <a 
+                      v-if="movie.link"
+                      :href="movie.link"
+                      target="_blank"
+                      class="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      <i class="fas fa-external-link-alt"></i>
+                    </a>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">导演：{{ movie.director }}</p>
+                  <p class="text-sm text-gray-700 mt-2 line-clamp-2">{{ movie.description }}</p>
+                </div>
+              </div>
+            </div>
+
             <!-- 相关链接部分 -->
             <div v-if="event.links && event.links.length > 0" class="bg-white">
               <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
