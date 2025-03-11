@@ -6,26 +6,25 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      'vue': 'vue/dist/vue.esm-browser.prod.js'
-    }
+      '@': path.resolve(__dirname, './src'),
+    },
   },
   server: {
+    open: false,
     port: 3000,
-    open: true,
-    hmr: {
-      overlay: false
-    }
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    assetsInlineLimit: 4096,
+    cssCodeSplit: true,
+    sourcemap: false,
     minify: 'terser',
     terserOptions: {
       compress: {
         drop_console: true,
-        drop_debugger: true
-      }
-    }
+        drop_debugger: true,
+      },
+    },
   }
 }); 
