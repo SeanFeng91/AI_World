@@ -253,124 +253,127 @@
   </transition>
 </template>
 
-<script>
-export default {
-  name: 'DetailModal',
-  props: {
-    event: {
-      type: Object,
-      required: true
-    },
-    visible: {
-      type: Boolean,
-      default: false
-    }
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+
+const props = defineProps({
+  event: {
+    type: Object,
+    required: true
   },
-  emits: ['close', 'open-lightbox'],
-  data() {
-    return {
-      currentImageIndex: 0
-    };
-  },
-  computed: {
-    hasImages() {
-      return (this.event.images && this.event.images.length > 0) || this.event.image;
-    },
-    hasMultipleImages() {
-      return this.imageArray.length > 1;
-    },
-    imageArray() {
-      if (this.event.images && this.event.images.length > 0) {
-        return this.event.images;
-      } else if (this.event.image) {
-        return [{url: this.event.image, caption: this.event.title}];
-      }
-      return [];
-    },
-    currentImageSrc() {
-      if (this.imageArray.length === 0) return '';
-      return this.imageArray[this.currentImageIndex]?.url || '';
-    },
-    currentImageCaption() {
-      if (this.imageArray.length === 0) return '';
-      return this.imageArray[this.currentImageIndex]?.caption || '';
-    }
-  },
-  methods: {
-    closeModal() {
-      this.$emit('close');
-      // 组件内部已处理滚动，此处不需要重复处理
-    },
-    handleImageError(e) {
-      e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjQwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjY2NjYiPuaaguaXoOWbvueJhzwvdGV4dD48L3N2Zz4=";
-      e.target.classList.add('image-placeholder');
-    },
-    getPeriodName(period) {
-      const periodMap = {
-        'ancient': '上古时代',
-        'classical': '古典时代',
-        'medieval': '中世纪',
-        'edo': '江户时代',
-        'modern': '近现代',
-        'contemporary': '当代'
-      };
-      return periodMap[period] || '未知时期';
-    },
-    getPeriodClass(period) {
-      const classMap = {
-        'ancient': 'bg-amber-600',
-        'classical': 'bg-emerald-600',
-        'medieval': 'bg-indigo-600',
-        'edo': 'bg-purple-600',
-        'modern': 'bg-blue-600',
-        'contemporary': 'bg-rose-600'
-      };
-      return classMap[period] || 'bg-gray-600';
-    },
-    nextImage() {
-      if (this.imageArray.length <= 1) return;
-      this.currentImageIndex = (this.currentImageIndex + 1) % this.imageArray.length;
-    },
-    prevImage() {
-      if (this.imageArray.length <= 1) return;
-      this.currentImageIndex = (this.currentImageIndex - 1 + this.imageArray.length) % this.imageArray.length;
-    }
-  },
-  mounted() {
-    // 监听ESC键关闭模态框
-    this.handleEsc = (e) => {
-      if (e.key === 'Escape' && this.visible) {
-        this.closeModal();
-      }
-    };
-    document.addEventListener('keydown', this.handleEsc);
-    
-    // 禁止背景滚动
-    if (this.visible) {
-      document.body.classList.add('overflow-hidden');
-      document.body.style.overflow = 'hidden';
-    }
-  },
-  watch: {
-    visible(newVal) {
-      if (newVal) {
-        // 模态框显示时禁止背景滚动
-        document.body.classList.add('overflow-hidden');
-        document.body.style.overflow = 'hidden';
-      } else {
-        // 模态框隐藏时恢复背景滚动
-        document.body.classList.remove('overflow-hidden');
-        document.body.style.overflow = 'auto';
-      }
-    }
-  },
-  beforeUnmount() {
-    // 清理事件监听器和样式
-    document.removeEventListener('keydown', this.handleEsc);
-    document.body.classList.remove('overflow-hidden');
-    document.body.style.overflow = 'auto';
+  visible: {
+    type: Boolean,
+    default: false
   }
+})
+
+const emit = defineEmits(['close', 'open-lightbox'])
+
+const currentImageIndex = ref(0)
+
+const hasImages = computed(() => {
+  return (props.event.images && props.event.images.length > 0) || props.event.image
+})
+
+const hasMultipleImages = computed(() => {
+  return imageArray.value.length > 1
+})
+
+const imageArray = computed(() => {
+  if (props.event.images && props.event.images.length > 0) {
+    return props.event.images
+  } else if (props.event.image) {
+    return [{url: props.event.image, caption: props.event.title}]
+  }
+  return []
+})
+
+const currentImageSrc = computed(() => {
+  if (imageArray.value.length === 0) return ''
+  return imageArray.value[currentImageIndex.value]?.url || ''
+})
+
+const currentImageCaption = computed(() => {
+  if (imageArray.value.length === 0) return ''
+  return imageArray.value[currentImageIndex.value]?.caption || ''
+})
+
+const closeModal = () => {
+  emit('close')
 }
+
+const handleImageError = (e) => {
+  e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjQwMCIgeT0iMjAwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjY2NjYiPuaaguaXoOWbvueJhzwvdGV4dD48L3N2Zz4="
+  e.target.classList.add('image-placeholder')
+}
+
+const getPeriodName = (period) => {
+  const periodMap = {
+    'ancient': '上古时代',
+    'classical': '古典时代',
+    'medieval': '中世纪',
+    'edo': '江户时代',
+    'modern': '近现代',
+    'contemporary': '当代'
+  }
+  return periodMap[period] || '未知时期'
+}
+
+const getPeriodClass = (period) => {
+  const classMap = {
+    'ancient': 'bg-amber-600',
+    'classical': 'bg-emerald-600',
+    'medieval': 'bg-indigo-600',
+    'edo': 'bg-purple-600',
+    'modern': 'bg-blue-600',
+    'contemporary': 'bg-rose-600'
+  }
+  return classMap[period] || 'bg-gray-600'
+}
+
+const nextImage = () => {
+  if (imageArray.value.length <= 1) return
+  currentImageIndex.value = (currentImageIndex.value + 1) % imageArray.value.length
+}
+
+const prevImage = () => {
+  if (imageArray.value.length <= 1) return
+  currentImageIndex.value = (currentImageIndex.value - 1 + imageArray.value.length) % imageArray.value.length
+}
+
+let handleEsc
+
+onMounted(() => {
+  handleEsc = (e) => {
+    if (e.key === 'Escape' && props.visible) {
+      closeModal()
+    }
+  }
+  document.addEventListener('keydown', handleEsc)
+  
+  if (props.visible) {
+    document.body.classList.add('overflow-hidden')
+    document.body.style.overflow = 'hidden'
+  }
+})
+
+watch(() => props.visible, (newVal) => {
+  if (newVal) {
+    document.body.classList.add('overflow-hidden')
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.classList.remove('overflow-hidden')
+    document.body.style.overflow = 'auto'
+  }
+})
+
+onBeforeUnmount(() => {
+  if (handleEsc) {
+    document.removeEventListener('keydown', handleEsc)
+  }
+  document.body.classList.remove('overflow-hidden')
+  document.body.style.overflow = 'auto'
+})
 </script>
 
 <style scoped>
