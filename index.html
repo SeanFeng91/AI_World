@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本历史时间轴</title>
+    <!-- Tailwind CSS -->
+    <link href="./dist/output.css" rel="stylesheet">
+    <!-- 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 数据文件 -->
+    <script src="data.js"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+        }
+        /* 动画效果 */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+        /* 时间轴线 */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            background: linear-gradient(to bottom, #D70040, #8B0000);
+            height: 100%;
+            z-index: 1;
+        }
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 30px;
+            }
+        }
+        /* 时间轴点装饰 */
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin-left: -10px;
+            z-index: 2;
+        }
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            opacity: 0.3;
+        }
+        @media (max-width: 768px) {
+            .timeline-dot {
+                left: 30px;
+                margin-left: -10px;
+            }
+        }
+        /* 自定义滚动条 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        /* 返回顶部按钮 */
+        .back-to-top {
+            @apply fixed bottom-6 right-6 bg-japan-red text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-all duration-300 z-30;
+        }
+        .back-to-top:hover {
+            @apply bg-japan-dark-red transform -translate-y-1;
+        }
+        /* 图片占位符样式 */
+        .image-placeholder {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            object-fit: contain !important;
+        }
+        /* 动画效果 */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+        /* 时间轴卡片动画 */
+        @keyframes slide-in-left {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slide-in-right {
+            from {
+                transform: translateX(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animate-slide-in-left {
+            animation: slide-in-left 0.5s ease-out forwards;
+        }
+        .animate-slide-in-right {
+            animation: slide-in-right 0.5s ease-out forwards;
+        }
+        .modal-fade-enter-active, .modal-fade-leave-active {
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .modal-fade-enter-from, .modal-fade-leave-to {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        
+        /* 自定义滚动条 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f9f9f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #ccc;
+        }
+        
+        /* 图片占位符样式 */
+        .image-placeholder {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            object-fit: contain !important;
+        }
+        
+        /* 边框宽度 */
+        .border-l-3 {
+            border-left-width: 3px;
+        }
+        
+        /* 文本截断 */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <div id="app">
+        <!-- 页眉 -->
+        <header class="bg-gradient-to-r from-japan-red to-japan-dark-red text-white py-12 shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-3">日本历史发展时间轴</h1>
+                <p class="text-xl opacity-90 max-w-2xl mx-auto">从远古时代到现代的日本历史演变</p>
+            </div>
+        </header>
+
+        <div class="container mx-auto px-4 py-8">
+            <!-- 筛选器 -->
+            <div class="mb-8 text-center">
+                <h2 class="text-2xl font-bold mb-4">按时期筛选</h2>
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button 
+                        v-for="period in periods" 
+                        :key="period.value"
+                        @click="filterByPeriod(period.value)"
+                        :class="[
+                            'px-4 py-2 rounded-full transition-all duration-200 font-medium',
+                            currentPeriod === period.value 
+                                ? 'bg-japan-red text-white shadow-md' 
+                                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                        ]"
+                    >
+                        {{ period.label }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="flex justify-center mb-8">
+                <div class="relative w-full max-w-md">
+                    <input 
+                        type="text" 
+                        v-model="searchQuery"
+                        @input="handleSearch"
+                        placeholder="搜索历史事件..." 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-japan-red focus:border-transparent shadow-sm"
+                    >
+                    <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-japan-red">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 时间轴 -->
+            <div class="relative py-8">
+                <!-- 时间轴中心线 -->
+                <div class="timeline-line"></div>
+                
+                <!-- 时间轴项目 -->
+                <div v-if="filteredEvents.length > 0" class="relative">
+                    <div 
+                        v-for="(item, index) in filteredEvents" 
+                        :key="item.id"
+                        class="relative mb-6"
+                        :style="{
+                            'margin-top': index > 0 ? '-2rem' : '0'
+                        }"
+                    >
+                        <div 
+                            :class="[
+                                'flex items-center relative',
+                                index % 2 === 0 ? 'justify-start' : 'justify-end',
+                                'pl-12 md:pl-0'
+                            ]"
+                        >
+                            <!-- 时间点 -->
+                            <div 
+                                :class="[
+                                    'timeline-dot',
+                                    getPeriodClass(item.period)
+                                ]"
+                                :style="{
+                                    top: '50%',
+                                    transform: 'translateY(-50%)'
+                                }"
+                            ></div>
+                            
+                            <!-- 内容卡片 -->
+                            <div 
+                                :class="[
+                                    'w-full md:w-5/12 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer transform hover:-translate-y-1',
+                                    index % 2 === 0 ? 'ml-0 mr-auto md:mr-8' : 'ml-auto md:ml-8',
+                                    index % 2 === 0 ? 'animate-slide-in-right' : 'animate-slide-in-left'
+                                ]"
+                                @click="showModal(item)"
+                            >
+                                <div class="mb-2">
+                                    <span 
+                                        :class="[
+                                            'inline-block px-3 py-1 rounded-full text-xs font-semibold text-white mb-2',
+                                            getPeriodClass(item.period)
+                                        ]"
+                                    >
+                                        {{ getPeriodName(item.period) }}
+                                    </span>
+                                    <span class="block text-lg font-bold text-gray-500">{{ item.year }}</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">{{ item.title }}</h3>
+                                <p class="text-gray-600 mb-3">{{ item.description }}</p>
+                                <button class="text-japan-red hover:text-japan-dark-red font-medium transition-colors duration-200" @click.stop="showModal(item)">
+                                    查看详情 <i class="fas fa-arrow-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 无数据提示 -->
+                <div v-else class="text-center py-12 bg-white rounded-lg shadow animate-fade-in">
+                    <i class="fas fa-search text-4xl text-gray-400 mb-3"></i>
+                    <p class="text-xl text-gray-600">没有找到匹配的历史事件</p>
+                    <button 
+                        @click="resetFilters" 
+                        class="mt-4 px-4 py-2 bg-japan-red text-white rounded-lg hover:bg-japan-dark-red transition-colors duration-200"
+                    >
+                        重置筛选条件
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 详情模态框组件 -->
+        <detail-modal 
+            v-if="selectedEvent" 
+            :event="selectedEvent" 
+            :visible="modalVisible"
+            @close="closeModal"
+            @open-lightbox="openLightbox"
+        ></detail-modal>
+
+        <!-- 图片灯箱 -->
+        <lightbox-gallery
+            :visible="showLightbox"
+            :images="lightboxImages"
+            :current-index="currentLightboxIndex"
+            @close="closeLightbox"
+            @prev="prevImage"
+            @next="nextImage"
+            @select="index => { currentLightboxIndex = index; currentLightboxImage = lightboxImages[index]; }"
+        ></lightbox-gallery>
+
+        <!-- 返回顶部按钮 -->
+        <transition name="fade">
+            <div v-if="showBackToTop" class="back-to-top" @click="scrollToTop">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+        </transition>
+
+        <!-- 页脚 -->
+        <footer class="bg-gray-800 text-white py-8 mt-12">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2023 日本历史时间轴 | 数据来源：维基百科与其他历史资料</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Vue 3 -->
+    <script type="module">
+        // 导入Vue
+        import { createApp } from 'https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.prod.js';
+        // 导入组件
+        import DetailModal from './src/components/DetailModal.vue';
+        import LightboxGallery from './src/components/LightboxGallery.vue';
+        
+        // 导入主应用
+        import './src/main.js';
+    </script>
+</body>
+</html> 

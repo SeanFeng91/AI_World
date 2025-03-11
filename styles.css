@@ -1,0 +1,498 @@
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans JP', 'Noto Sans SC', sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 页眉样式 */
+header {
+    background: linear-gradient(135deg, #D70040, #8B0000);
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+header p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    opacity: 0.9;
+}
+
+/* 筛选器样式 */
+.filters {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.filters h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #444;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.filter-btn {
+    padding: 8px 15px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    color: #555;
+}
+
+.filter-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.filter-btn.active {
+    background-color: #D70040;
+    color: white;
+    box-shadow: 0 2px 8px rgba(215, 0, 64, 0.3);
+}
+
+/* 搜索栏样式 */
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+#timelineSearch {
+    width: 60%;
+    max-width: 500px;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px 0 0 30px;
+    font-size: 16px;
+    outline: none;
+}
+
+#searchBtn {
+    padding: 12px 20px;
+    background: #D70040;
+    color: white;
+    border: none;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+}
+
+/* 时间轴样式 */
+.timeline-wrapper {
+    position: relative;
+    margin: 50px 0;
+}
+
+.timeline-nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 20px;
+}
+
+#prevBtn, #nextBtn {
+    background-color: #D70040;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+#prevBtn:hover, #nextBtn:hover {
+    background-color: #B50036;
+    transform: scale(1.05);
+}
+
+.timeline {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background-color: #D70040;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.timeline-item:nth-child(even) {
+    justify-content: flex-start;
+}
+
+.timeline-item-content {
+    position: relative;
+    width: calc(50% - 40px);
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.timeline-item:nth-child(even) .timeline-item-content {
+    margin-left: 40px;
+}
+
+.timeline-item:nth-child(odd) .timeline-item-content {
+    margin-right: 40px;
+}
+
+.timeline-item-content::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    top: 25px;
+}
+
+.timeline-item:nth-child(odd) .timeline-item-content::after {
+    right: -10px;
+    transform: rotate(-45deg);
+}
+
+.timeline-item:nth-child(even) .timeline-item-content::after {
+    left: -10px;
+    transform: rotate(135deg);
+}
+
+.timeline-dot {
+    position: absolute;
+    top: 25px;
+    width: 20px;
+    height: 20px;
+    background-color: #D70040;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.timeline-item:nth-child(odd) .timeline-dot {
+    right: -50px;
+}
+
+.timeline-item:nth-child(even) .timeline-dot {
+    left: -50px;
+}
+
+.timeline-year {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #D70040;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.timeline-item-content h3 {
+    margin: 5px 0 15px;
+    font-size: 18px;
+    color: #333;
+}
+
+.timeline-item-content p {
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #666;
+}
+
+.period-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+
+.ancient {
+    background-color: #9C6644;
+    color: white;
+}
+
+.classical {
+    background-color: #8EA604;
+    color: white;
+}
+
+.medieval {
+    background-color: #7D5BA6;
+    color: white;
+}
+
+.edo {
+    background-color: #0A8754;
+    color: white;
+}
+
+.modern {
+    background-color: #006E90;
+    color: white;
+}
+
+.contemporary {
+    background-color: #6B7FD7;
+    color: white;
+}
+
+.timeline-item-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.read-more {
+    display: inline-block;
+    margin-top: 10px;
+    color: #D70040;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+/* 隐藏长描述，只在详细视图中显示 */
+.full-description {
+    display: none;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    overflow-y: auto;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 50px auto;
+    padding: 30px;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #555;
+}
+
+.modal h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #111;
+}
+
+.modal-info {
+    margin-bottom: 20px;
+}
+
+.modal-info #modalYear {
+    font-weight: 600;
+    color: #333;
+}
+
+.modal-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    margin: 20px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.modal-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.modal-links {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.modal-links a {
+    display: inline-block;
+    margin-right: 15px;
+    color: #D70040;
+    text-decoration: none;
+}
+
+.modal-links a:hover {
+    text-decoration: underline;
+}
+
+/* 页脚样式 */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 50px;
+}
+
+footer p {
+    opacity: 0.8;
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+    .timeline::before {
+        left: 30px;
+    }
+    
+    .timeline-item, .timeline-item:nth-child(even) {
+        justify-content: flex-start;
+        padding-left: 70px;
+        width: 100%;
+    }
+    
+    .timeline-item-content, 
+    .timeline-item:nth-child(odd) .timeline-item-content,
+    .timeline-item:nth-child(even) .timeline-item-content {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .timeline-dot,
+    .timeline-item:nth-child(odd) .timeline-dot,
+    .timeline-item:nth-child(even) .timeline-dot {
+        left: 20px;
+        right: auto;
+    }
+    
+    .timeline-item-content::after {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+    
+    .filters h2 {
+        font-size: 1.3rem;
+    }
+    
+    .filter-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    
+    .timeline-year {
+        font-size: 12px;
+    }
+    
+    .timeline-item-content h3 {
+        font-size: 16px;
+    }
+    
+    .timeline-item-content p {
+        font-size: 14px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 30px auto;
+    }
+}
+
+/* 分页信息样式 */
+.pagination-info {
+    text-align: center;
+    margin-top: 30px;
+    color: #666;
+    font-size: 14px;
+}
+
+.no-data {
+    text-align: center;
+    padding: 50px 0;
+    color: #666;
+    font-style: italic;
+} 
